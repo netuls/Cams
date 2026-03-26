@@ -23,7 +23,7 @@
 </head>
 <body>
 
-    <!-- SPLASH SCREEN -->
+    <!-- SPLASH SCREEN (Tela de Carregamento) -->
     <div class="splash" id="splash">
         <div class="splash-bg">
             <div class="splash-wave"></div>
@@ -35,13 +35,13 @@
             <div class="splash-photo-wrap">
                 <div class="splash-photo-pulse2"></div>
                 <div class="splash-photo-pulse"></div> 
-                <div class="premium-ring"></div> <!-- ADICIONE ESTA LINHA -->
+                <div class="premium-ring"></div>
                 <img class="splash-photo" src="foto.jpg" alt="Cams" />
                 <div class="splash-ring-inner"></div>
                 <div class="splash-ring-outer"></div>
             </div>
             <div class="splash-name-wrap">
-                <span class="splash-name" id="splash-name-letters"></span>
+                <span class="splash-name" id="splash-name-letters">Camila Evelyn</span>
                 <span class="splash-sub">Agenda de Exercícios</span>
             </div>
             <div class="splash-loader">
@@ -67,40 +67,57 @@
 
         <div class="week-nav" id="week-nav"></div>  
 
+        <!-- JANELA DE RELATÓRIO -->
         <div class="overlay" id="overlay" onclick="closeReport(event)">
-  <div class="report-panel" id="report-panel">
-    <div class="report-header">
-      <div class="report-title">
-        <small>Relatório de treinos</small>
-        Meu Progresso
-      </div>
-      <button class="btn-close" onclick="closeReportBtn()">✕</button>
-    </div>
+            <div class="report-panel" id="report-panel">
+                <div class="report-header">
+                    <div class="report-title">
+                        <small>Relatório de treinos</small>
+                        Meu Progresso
+                    </div>
+                    <button class="btn-close" onclick="closeReportBtn()">✕</button>
+                </div>
+                <div class="summary-strip" id="summary-strip"></div>
+                <div class="report-section">
+                    <div class="heatmap-grid" id="heatmap-grid"></div>
+                </div>
+                <div class="report-section">
+                    <div class="day-log-list" id="day-log-list"></div>
+                </div>
+            </div>
+        </div>
 
-    <!-- Onde os números aparecem -->
-    <div class="summary-strip" id="summary-strip"></div>
+        <!-- JANELA DE DUPLICAÇÃO (Faltava este bloco) -->
+        <div class="overlay" id="dup-overlay" onclick="closeDupOverlay(event)">
+            <div class="report-panel" id="dup-panel" style="max-width:500px">
+                <div class="report-header">
+                    <div class="report-title"><small>Copiar treino</small>Duplicar para...</div>
+                    <button class="btn-close" onclick="closeDupBtn()">✕</button>
+                </div>
+                <div id="dup-source-info"></div>
+                <div class="dup-days-grid" id="dup-days-grid"></div>
+                <button class="btn-add" style="width:100%" onclick="executeDuplicate()">Confirmar Cópia</button>
+            </div>
+        </div>
 
-    <!-- Onde o calendário aparece -->
-    <div class="report-section">
-      <div class="heatmap-grid" id="heatmap-grid"></div>
-    </div>
+        <!-- JANELA DE CELEBRAÇÃO (Faltava este bloco) -->
+        <div class="celebration-overlay" id="celebration-overlay">
+            <div class="celebration-box" id="celebration-box">
+                <span class="celebration-emoji">🎉</span>
+                <div class="celebration-title">Treino Confirmado!</div>
+                <div class="celebration-sub">Você arrasou hoje! 💗</div>
+                <div class="celebration-stats" id="cel-stats"></div>
+                <button class="btn-close-cel" onclick="closeCelebration()">Fechar</button>
+            </div>
+        </div>
 
-    <!-- Onde a lista aparece -->
-    <div class="report-section">
-      <div class="day-log-list" id="day-log-list"></div>
-    </div>
-  </div>
-</div>
-        
-        <!-- CAMPO DA CREATINA ADICIONADO AQUI -->
-    <div id="creatine-bar-container"></div>
-
-    <div id="checkin-bar"></div>
-
+        <!-- CONTEÚDO DO DIA -->
         <div class="card">
             <div class="section-label">Exercícios do dia</div>
             <div class="day-name-big" id="active-day-name"></div>
             <div class="day-full-date" id="active-day-date"></div>
+            
+            <!-- Barras de Status -->
             <div id="creatine-bar"></div>
             <div id="checkin-bar"></div>
 
@@ -114,10 +131,15 @@
                 <input type="time" id="ex-time" />
                 <button class="btn-add" onclick="addExercise()">+ Adicionar</button>
             </div>
+
             <div class="ex-list" id="ex-list"></div>
+
+            <!-- Botões de Ação (Duplicar e Confirmar) -->
             <div id="dup-bar"></div>
+            <div id="confirm-bar"></div>
         </div>
 
+        <!-- RODAPÉ (Estatísticas) -->
         <div class="bottom-row">
             <div class="card">
                 <div class="section-label">Semana atual</div>
