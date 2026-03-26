@@ -3,12 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#d63f7e">
     <title>Cams Exercícios</title>
-    
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;700&family=Jost:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
@@ -17,13 +13,12 @@
     <!-- Splash Screen -->
     <div class="splash" id="splash">
         <div class="splash-bg">
-            <div class="splash-wave"></div>
-            <div class="splash-wave"></div>
-            <div class="splash-wave"></div>
+            <div class="splash-wave"></div><div class="splash-wave"></div><div class="splash-wave"></div>
         </div>
         <div class="splash-center">
             <div class="splash-photo-wrap">
                 <div class="premium-ring"></div>
+                <!-- VERIFIQUE SE O NOME DA FOTO ESTÁ CORRETO ABAIXO -->
                 <img class="splash-photo" src="sua-foto.jpg" alt="Cams">
             </div>
             <div class="splash-name-wrap">
@@ -41,7 +36,7 @@
             </div>
             <div class="header-right">
                 <div class="date-badge" id="current-date"></div>
-                <button class="btn-report" onclick="openReport()">📊 Relatório</button>
+                <button class="btn-report" onclick="window.openReport()">📊 Relatório</button>
             </div>
         </header>
 
@@ -50,22 +45,16 @@
         <div class="card">
             <div class="day-name-big" id="active-day-name"></div>
             <div class="day-full-date" id="active-day-date"></div>
-            
             <div id="creatine-bar"></div>
             <div id="checkin-bar"></div>
-
-            <div class="presets-section">
-                <div class="presets-chips" id="presets-chips"></div>
-            </div>
 
             <div class="add-form">
                 <input type="text" id="ex-input" placeholder="Novo exercício...">
                 <input type="time" id="ex-time">
-                <button class="btn-add" onclick="addExercise()">+ Adicionar</button>
+                <button class="btn-add" onclick="window.addExercise()">+ Adicionar</button>
             </div>
 
             <div class="ex-list" id="ex-list"></div>
-            <div id="dup-bar"></div>
         </div>
 
         <div class="bottom-row">
@@ -74,14 +63,28 @@
         </div>
     </div>
 
-    <!-- Firebase Status -->
-    <div class="firebase-status">
-        <div class="fb-dot" id="fb-dot"></div>
-        <span id="fb-label">Firebase</span>
+    <!-- Overlay de Relatório Simples -->
+    <div class="overlay" id="overlay">
+        <div class="report-panel">
+            <button onclick="window.closeReport()">Fechar Relatório</button>
+            <div id="report-content">Em breve mais detalhes...</div>
+        </div>
     </div>
 
-    <!-- Scripts (Ordem Importante) -->
-    <script type="module" src="firebase-config.js"></script>
-    <script src="scripts.js"></script>
+    <div class="firebase-status"><div class="fb-dot" id="fb-dot"></div><span id="fb-label">Firebase</span></div>
+
+    <!-- CARREGAMENTO ÚNICO DO JAVASCRIPT -->
+    <script type="module" src="scripts.js"></script>
+
+    <!-- Script de Emergência: Remove a splash se o JS principal falhar -->
+    <script>
+        setTimeout(() => {
+            const s = document.getElementById('splash');
+            if (s && !s.classList.contains('hide')) {
+                s.classList.add('hide');
+                console.log("Remoção de emergência da splash executada.");
+            }
+        }, 5000);
+    </script>
 </body>
 </html>
