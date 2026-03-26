@@ -65,7 +65,32 @@
             </div>
         </header>
 
-        <div class="week-nav" id="week-nav"></div> 
+        <div class="week-nav" id="week-nav"></div>  
+
+        <div class="overlay" id="overlay" onclick="closeReport(event)">
+  <div class="report-panel" id="report-panel">
+    <div class="report-header">
+      <div class="report-title">
+        <small>Relatório de treinos</small>
+        Meu Progresso
+      </div>
+      <button class="btn-close" onclick="closeReportBtn()">✕</button>
+    </div>
+
+    <!-- Onde os números aparecem -->
+    <div class="summary-strip" id="summary-strip"></div>
+
+    <!-- Onde o calendário aparece -->
+    <div class="report-section">
+      <div class="heatmap-grid" id="heatmap-grid"></div>
+    </div>
+
+    <!-- Onde a lista aparece -->
+    <div class="report-section">
+      <div class="day-log-list" id="day-log-list"></div>
+    </div>
+  </div>
+</div>
         
         <!-- CAMPO DA CREATINA ADICIONADO AQUI -->
     <div id="creatine-bar-container"></div>
