@@ -426,6 +426,17 @@ function deleteEx(key, idx) {
 
 function renderMain() {
   renderTabs(); renderList(); renderOverview(); renderStats(); renderCheckinBar(); renderDupBar(); renderPresetChips();
+} 
+
+function renderMain() {
+  renderTabs(); 
+  renderList(); 
+  renderOverview(); 
+  renderStats(); 
+  renderCheckinBar(); 
+  renderDupBar(); 
+  renderPresetChips();
+  renderCreatineBar(); // <--- ADICIONE ESTA LINHA AQUI
 }
 
 // ─────────────────────────────────────────
@@ -1250,6 +1261,77 @@ function checkCreatineReminder() {
       sessionStorage.removeItem('creatine_notified');
     }
   }
+} 
+// ── LÓGICA DA CREATINA ──
+
+// Verifica se tomou creatina no dia selecionado
+function isCreatineTaken(key) {
+  const d = load();
+  return !!(d.creatine && d.creatine[key]);
+}
+
+// Salva ou remove o check-in da creatina
+function toggleCreatine(key) {
+  const d = load();
+  if (!d.creatine) d.creatine = {};
+  
+  if (d.creatine[key]) {
+    delete d.creatine[key];
+  } else {
+    d.creatine[key] = true;
+    haptic('success');
+  }
+  
+  save(d);
+  renderMain();
+}
+
+// Desenha a barra na tela
+function renderCreatineBar() {
+  const dates = getWeekDates();
+  const key = dateKey(dates[activeIdx]);
+  const taken = isCreatineTaken(key);
+  const container = document.getElementById('creatine-bar-container');
+  
+  if(!container) return;
+
+  container.innerHTML = `
+    <div class="creatine-bar ${taken ? 'taken' : ''}">
+      <div style="font-size: 1.5rem;">${taken ? '🥤' : '🥛'}</div>
+      <div class="creatine-info">
+        <div class="creatine-title">Suplementação: Creatina</div>
+        <div class="creatine-status">${taken ? 'Status: Tomado! ✨' : 'Status: Pendente'}</div>
+      </div>
+      <button class="btn-creatine ${taken ? 'done' : ''}" onclick="toggleCreatine('${key}')">
+        ${taken ? '✓ Confirmado' : 'Check-in'}
+      </button>
+    </div>
+  `;
+}
+
+// Notificação das 21h (Verifica a cada minuto)
+function checkCreatineReminder() {
+  setInterval(() => {
+    const agora = new Date();
+    const horas = agora.getHours();
+    const minutos = agora.getMinutes();
+    const hoje = dateKey(agora);
+
+    // Se for 21:00 e ainda não tomou hoje
+    if (horas === 21 && minutos === 0 && !isCreatineTaken(hoje)) {
+      // Verifica se já notificamos nos últimos 5 minutos para não repetir
+      if (!sessionStorage.getItem('notificado_creatina')) {
+        if (Notification.permission === "granted") {
+          new Notification("🔔 Hora da Creatina!", { body: "Cams, não esquece de tomar sua creatina agora!" });
+        } else {
+          alert("🔔 Cams, hora da Creatina! Não esquece de tomar.");
+        }
+        sessionStorage.setItem('notificado_creatina', 'true');
+      }
+    } else if (horas !== 21) {
+      sessionStorage.removeItem('notificado_creatina');
+    }
+  }, 60000); // Roda a cada 1 minuto
 }
 function init() {
   weekOffset = 0;
@@ -1274,6 +1356,40 @@ function init() {
     setTimeout(hideSplash, 2600);
 
     // Toque na splash pula para o app
+    splash.addEventListener('click', () => {
+      if (!splash.classList.contains('hide')) hideSplash();
+    });
+  }
+} 
+function init() {
+  weekOffset = 0;
+  activeIdx = todayWeekIdx();
+  updateDateBadge();
+  renderMain();
+  
+  // Lógica da Creatina ao iniciar
+  renderCreatineBar();      // Desenha a barra
+  checkCreatineReminder();  // Ativa o alarme das 21h
+  
+  // Pede permissão para mostrar notificações no celular/PC
+  if (window.Notification && Notification.permission !== "granted") {
+    Notification.requestPermission();
+  }
+
+  setTimeout(renderOverview, 120);
+  iniciarGeoWatch();
+
+  // Código da Splash Screen (que já estava aí...)
+  const splash = document.getElementById('splash');
+  if (splash) {
+    const hideSplash = () => {
+      splash.classList.add('hide');
+      setTimeout(() => {
+        splash.style.display = 'none';
+        splash.remove();
+      }, 900);
+    };
+    setTimeout(hideSplash, 2600);
     splash.addEventListener('click', () => {
       if (!splash.classList.contains('hide')) hideSplash();
     });
