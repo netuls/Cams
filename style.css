@@ -1226,39 +1226,66 @@
   }
 
   /* ─── Foto ─── */
-  .splash-photo-wrap {
+ /* --- CONTAINER DA FOTO --- */
+.splash-photo-wrap {
   position: relative;
-  width: 180px; 
-  height: 180px;
+  width: 190px; /* Aumentado para caber o anel */
+  height: 190px;
   margin-bottom: 35px;
   display: flex;
   align-items: center;
-  justify-content: center;
-  animation: floatPhoto 4s ease-in-out infinite;
-}
-
- /* Foto da Splash Screen */
-.splash-photo {
+  justify-content: center; 
+} 
+.premium-ring {
+  position: absolute;
   width: 100%;
   height: 100%;
   border-radius: 50%;
-  object-fit: cover;
-  position: relative;
-  z-index: 3;
-  filter: contrast(1.05) saturate(1.1) brightness(1.05) drop-shadow(0 10px 25px rgba(0,0,0,0.3));
-  border: 2px solid rgba(255, 255, 255, 0.6);
-  animation: photoReveal 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-} 
-@keyframes photoReveal {
-  0% { transform: scale(0.8); opacity: 0; filter: brightness(2) blur(10px); }
-  100% { transform: scale(1); opacity: 1; filter: brightness(1.05) blur(0); }
+  padding: 3px; /* Espessura do anel */ 
+    /* Gradiente luxuoso */
+  background: conic-gradient(from 0deg, var(--pink), var(--pink-mid), transparent 60%, var(--pink));
+  
+  /* Efeito de máscara para deixar o centro oco */
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #fff 100%);
+  mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #fff 100%);
+  
+  /* Giro contínuo */
+  animation: spinRing 2.5s linear infinite;
+  z-index: 2;
 }
 
-@keyframes floatPhoto {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-12px); }
+/* Brilho neon suave atrás do anel */
+.premium-ring::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  box-shadow: 0 0 15px var(--pink-glow);
 }
-/* ----------------------------------------- */
+
+ /* Foto da Splash Screen */ 
+.splash-photo {
+  width: 165px; /* Um pouco menor que o anel */
+  height: 165px;
+  border-radius: 50%;
+  object-fit: cover;
+  position: relative;
+  z-index: 3; 
+    box-shadow: 0 8px 25px rgba(0,0,0,0.2); 
+    filter: contrast(1.05) brightness(1.05);
+  
+  /* Animação de entrada */
+  animation: photoReveal 1s ease-out forwards;
+@keyframes spinRing {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Animação de entrada da foto */
+@keyframes photoReveal {
+  0% { transform: scale(0.5); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
 
 /* Esconder os anéis e pulsos que criam as bordas e efeitos */
 .splash-ring-outer, 
