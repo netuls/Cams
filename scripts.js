@@ -6,7 +6,8 @@ const DAYS_FULL   = ['Domingo','Segunda-feira','Terça-feira','Quarta-feira','Qu
 const MONTHS_PT   = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
 const MONTHS_FULL = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
 
-let activeIdx = todayWeekIdx(); 
+// Inicializamos sem valor para evitar erro de carregamento precoce
+let activeIdx; 
 let weekOffset = 0;             
 let activePeriod = 'week';      
 let customFrom = null;
@@ -100,14 +101,14 @@ function renderCreatineBar() {
   const dates = getWeekDates();
   const key = dateKey(dates[activeIdx]);
   const taken = !!load().creatine[key];
-  const container = document.getElementById('creatine-bar-container');
+  const container = document.getElementById('creatine-bar'); // Ajustado para bater com o ID do seu HTML
   if(!container) return;
 
   container.innerHTML = `
     <div class="creatine-bar ${taken ? 'taken' : ''}">
       <div style="font-size: 1.5rem;">${taken ? '🥤' : '🥛'}</div>
       <div class="creatine-info">
-        <div class="creatine-title">Suplementação: Creatina</div>
+        <div class="creatine-title">Creatina</div>
         <div class="creatine-status">${taken ? 'Já tomou hoje! ✨' : 'Ainda não tomou'}</div>
       </div>
       <button class="btn-creatine ${taken ? 'done' : ''}" onclick="toggleCreatine('${key}')">
@@ -118,7 +119,6 @@ function renderCreatineBar() {
 }
 
 function checkCreatineReminder() {
-  setInterval(() => {
     const agora = new Date();
     if (agora.getHours() === 21 && agora.getMinutes() === 0 && !load().creatine[dateKey(agora)]) {
       if (!sessionStorage.getItem('creatine_notified')) {
@@ -128,7 +128,6 @@ function checkCreatineReminder() {
     } else if (agora.getHours() !== 21) {
       sessionStorage.removeItem('creatine_notified');
     }
-  }, 60000);
 }
 
 // ─────────────────────────────────────────
@@ -158,104 +157,13 @@ function doCheckout(key) { const d=load(); d.sessions[key].checkout=new Date().t
 function resetSession(key) { const d=load(); delete d.sessions[key]; save(d); renderMain(); }
 
 // ─────────────────────────────────────────
-//  RELATÓRIO (LOGICA COMPLETA)
-// ─────────────────────────────────────────
-
-function openReport() {
-  document.getElementById('overlay').classList.add('open');
-  document.body.style.overflow = 'hidden';
-  renderReport();
-}
-
-function closeReportBtn() {
-  document.getElementById('overlay').classList.remove('open');
-  document.body.style.overflow = '';
-}
-
-function setPeriod(period, btn) {
-  activePeriod = period;
-  document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  renderReport();
-}
-
-function getPeriodRange(period) {
-  const now = new Date();
-  let start = new Date(); start.setHours(0,0,0,0);
-  let end = new Date(); end.setHours(23,59,59,999);
-
-  if (period === 'week') {
-    const day = now.getDay();
-    const diff = (day === 0) ? -6 : 1 - day;
-    start.setDate(now.getDate() + diff);
-    end.setDate(start.getDate() + 6);
-  } else if (period === 'month') {
-    start.setDate(1);
-    end = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-  } else if (period === 'year') {
-    start.setMonth(0, 1);
-    end.setMonth(11, 31);
-  } else if (period === 'all') {
-    start = new Date(2023, 0, 1);
-  }
-  return { start, end };
-}
-
-function renderReport() {
-  const { start, end } = getPeriodRange(activePeriod);
-  const data = load();
-  const filtered = Object.entries(data.entries).filter(([key]) => {
-    const d = new Date(key + 'T12:00:00');
-    return d >= start && d <= end;
-  });
-
-  const totalEx = filtered.reduce((acc, [_, ex]) => acc + ex.length, 0);
-  const totalDone = filtered.reduce((acc, [_, ex]) => acc + ex.filter(e => e.done).length, 0);
-  const daysCount = filtered.length;
-
-  document.getElementById('summary-strip').innerHTML = `
-    <div class="sum-card"><div class="sum-num">${totalEx}</div><div class="sum-label">Total</div></div>
-    <div class="sum-card"><div class="sum-num mid">${totalDone}</div><div class="sum-label">Feitos</div></div>
-    <div class="sum-card"><div class="sum-num purple">${daysCount}</div><div class="sum-label">Dias</div></div>
-  `;
-
-  renderHeatmap(start, end, data);
-  renderDayLog(filtered);
-}
-
-function renderHeatmap(start, end, data) {
-  const grid = document.getElementById('heatmap-grid');
-  grid.innerHTML = '';
-  // Simplificado para os últimos 35 dias no relatório
-  for (let i = 0; i < 35; i++) {
-    const d = new Date(); d.setDate(d.getDate() - (34 - i));
-    const key = dateKey(d);
-    const count = (data.entries[key] || []).length;
-    const cell = document.createElement('div');
-    cell.className = `hm-cell ${count > 0 ? 'level' + Math.min(count, 4) : ''}`;
-    grid.appendChild(cell);
-  }
-}
-
-function renderDayLog(filtered) {
-  const log = document.getElementById('day-log-list');
-  if (filtered.length === 0) {
-    log.innerHTML = '<div class="no-data">Sem treinos no período.</div>';
-    return;
-  }
-  log.innerHTML = filtered.sort().reverse().map(([key, ex]) => `
-    <div class="day-log-item">
-      <div class="log-date">${key.split('-')[2]}<small>${MONTHS_PT[new Date(key+'T12:00:00').getMonth()]}</small></div>
-      <div class="log-exercises">${ex.map(e => `<span class="log-ex-tag ${e.done?'done-tag':''}">${e.name}</span>`).join('')}</div>
-    </div>
-  `).join('');
-}
-
-// ─────────────────────────────────────────
 //  SISTEMA DE ABAS E LISTA PRINCIPAL
 // ─────────────────────────────────────────
 
-function todayWeekIdx() { const d = new Date().getDay(); return d === 0 ? 6 : d - 1; }
+function todayWeekIdx() { 
+    const d = new Date().getDay(); 
+    return d === 0 ? 6 : d - 1; 
+}
 
 function getWeekStart() {
   const now = new Date();
@@ -272,23 +180,19 @@ function getWeekDates() {
   return Array.from({length:7},(_,i) => { const d=new Date(mon); d.setDate(mon.getDate()+i); return d; });
 }
 
-function changeWeek(dir) { weekOffset += dir; renderMain(); }
-
 function renderTabs() {
   const dates = getWeekDates();
   const container = document.querySelector('.tabs-row');
-  const weekRange = document.querySelector('.week-range');
+  const weekRange = document.getElementById('week-nav'); // Simplificado
   if(!container) return;
 
-  weekRange.textContent = `${dates[0].getDate()} ${MONTHS_PT[dates[0].getMonth()]} - ${dates[6].getDate()} ${MONTHS_PT[dates[6].getMonth()]}`;
-  
   container.innerHTML = dates.map((d, i) => {
     const key = dateKey(d);
     const n = getForDate(key).length;
     const active = i === activeIdx ? 'active' : '';
     const today = key === dateKey(new Date()) ? 'today' : '';
     return `<button class="day-tab ${active} ${today}" onclick="selectDay(${i})">
-      ${DAYS_SHORT[d.getDay() === 0 ? 6 : d.getDay() - 1] || 'Dom'}
+      ${DAYS_SHORT[d.getDay()]}
       <span style="font-size:0.7rem">${d.getDate()}</span>
       <span class="ex-count">${n}</span>
     </button>`;
@@ -302,10 +206,11 @@ function renderList() {
   const items = getForDate(key);
   const list = document.getElementById('ex-list');
   
-  document.getElementById('active-day-name').textContent = DAYS_FULL[getWeekDates()[activeIdx].getDay()];
+  const dayNameElement = document.getElementById('active-day-name');
+  if(dayNameElement) dayNameElement.textContent = DAYS_FULL[getWeekDates()[activeIdx].getDay()];
 
   if (items.length === 0) {
-    list.innerHTML = '<div class="empty-state">Clique nos botões abaixo ou adicione manualmente.</div>';
+    list.innerHTML = '<div class="empty-state">Nenhum exercício para hoje.</div>';
     return;
   }
 
@@ -320,7 +225,7 @@ function renderList() {
 
 function addExercise() {
   const input = document.getElementById('ex-input');
-  if (!input.value.trim()) return;
+  if (!input || !input.value.trim()) return;
   const key = dateKey(getWeekDates()[activeIdx]);
   const arr = getForDate(key);
   arr.push({ id: Date.now(), name: input.value.trim(), done: false });
@@ -344,10 +249,16 @@ function deleteEx(key, idx) {
 }
 
 // ─────────────────────────────────────────
-//  INICIALIZAÇÃO
+//  ESTATÍSTICAS E COMPLEMENTOS
 // ─────────────────────────────────────────
 
+function updateDateBadge() {
+    const el = document.getElementById('current-date');
+    if(el) el.textContent = new Date().toLocaleDateString('pt-BR', {day: '2-digit', month: 'short'});
+}
+
 function renderMain() {
+  if (activeIdx === undefined) activeIdx = todayWeekIdx();
   renderTabs();
   renderList();
   renderCheckinBar();
@@ -359,6 +270,7 @@ function renderMain() {
 
 function renderPresetChips() {
   const container = document.getElementById('presets-chips');
+  if(!container) return;
   const presets = [
     {n:"Quadríceps", i:"🦵"}, {n:"Glúteo", i:"🍑"}, 
     {n:"Costas", i:"🔙"}, {n:"Bíceps", i:"💪"}, {n:"Escada", i:"🏃‍♀️"}
@@ -380,39 +292,54 @@ function addPreset(name) {
 }
 
 function renderStats() {
-  const items = getForDate(dateKey(getWeekDates()[activeIdx]));
+  const key = dateKey(getWeekDates()[activeIdx]);
+  const items = getForDate(key);
   const done = items.filter(e => e.done).length;
   const pct = items.length ? Math.round((done/items.length)*100) : 0;
-  document.getElementById('progress-wrap').innerHTML = `
-    <div class="progress-label"><span>Progresso</span><span>${pct}%</span></div>
-    <div class="progress-bg"><div class="progress-fill" style="width:${pct}%"></div></div>
-  `;
+  const wrap = document.getElementById('progress-wrap');
+  if(wrap) {
+    wrap.innerHTML = `
+      <div class="progress-label"><span>Progresso</span><span>${pct}%</span></div>
+      <div class="progress-bg"><div class="progress-fill" style="width:${pct}%"></div></div>
+    `;
+  }
 }
 
 function renderOverview() {
   const grid = document.getElementById('overview-grid');
+  if(!grid) return;
   const dates = getWeekDates();
   grid.innerHTML = dates.map(d => {
     const n = getForDate(dateKey(d)).length;
-    return `<div class="ov-day"><div class="ov-bar-wrap"><div class="ov-bar" style="height:${n*15}%"></div></div></div>`;
+    return `<div class="ov-day"><div class="ov-bar-wrap"><div class="ov-bar" style="height:${Math.min(n*20, 100)}%"></div></div></div>`;
   }).join('');
 }
 
 function haptic(type) { if(navigator.vibrate) navigator.vibrate(20); }
 
+// ─────────────────────────────────────────
+//  INICIALIZAÇÃO (Onde o Splash é removido)
+// ─────────────────────────────────────────
+
 function init() {
-  updateDateBadge();
-  renderMain();
-  checkCreatineReminder();
-  
+  try {
+    activeIdx = todayWeekIdx();
+    updateDateBadge();
+    renderMain();
+    setInterval(checkCreatineReminder, 60000);
+  } catch (e) {
+    console.error("Erro na inicialização:", e);
+  }
+
+  // Remove a Splash Screen mesmo que ocorra erro acima
   const splash = document.getElementById('splash');
   if (splash) {
     setTimeout(() => {
       splash.classList.add('hide');
       setTimeout(() => splash.remove(), 900);
-    }, 2500);
+    }, 2000);
   }
 }
 
 // Inicia o app
-init();
+document.addEventListener('DOMContentLoaded', init);
