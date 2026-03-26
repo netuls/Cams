@@ -1,4 +1,4 @@
-/* ── CONFIGURAÇÕES GERAIS E VARIÁVEIS ── */
+/* ─── VARIÁVEIS E CORES ─── */
 :root {
     --bg:         #fce8f0;
     --surface:    #ffffff;
@@ -20,7 +20,8 @@
     --shadow2:    0 8px 32px rgba(214,63,126,0.15);
 }
 
-* { margin:0; padding:0; box-sizing:border-box; }
+/* ─── RESET E BASE ─── */
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
 
 body {
     background: var(--bg);
@@ -28,10 +29,9 @@ body {
     font-family: 'Jost', sans-serif;
     min-height: 100vh;
     overflow-x: hidden;
-    position: relative;
 }
 
-/* ── FUNDO DECORATIVO ── */
+/* Fundo com gradientes suaves */
 body::before {
     content:''; position:fixed; inset:0;
     background:
@@ -41,19 +41,7 @@ body::before {
     pointer-events:none; z-index:0;
 }
 
-body::after {
-    content:''; position:fixed; inset:0;
-    background-image: radial-gradient(circle, rgba(214,63,126,0.08) 1px, transparent 1px);
-    background-size: 32px 32px;
-    pointer-events:none; z-index:0;
-}
-
-.deco { position:fixed; pointer-events:none; z-index:0; font-size:5rem; opacity:0.045; user-select:none; }
-.deco1 { top:5%; right:4%; transform:rotate(15deg); }
-.deco2 { bottom:10%; left:2%; transform:rotate(-20deg); font-size:3.5rem; }
-.deco3 { top:45%; right:2%; transform:rotate(8deg); font-size:3rem; opacity:0.03; }
-
-/* ── LAYOUT E APP ── */
+/* ─── LAYOUT PRINCIPAL ─── */
 .app {
     position:relative; z-index:1;
     max-width:900px; margin:0 auto;
@@ -61,12 +49,6 @@ body::after {
     animation:fadeUp 0.55s ease both;
 }
 
-@keyframes fadeUp {
-    from { opacity:0; transform:translateY(16px); }
-    to   { opacity:1; transform:translateY(0); }
-}
-
-/* ── HEADER ── */
 header {
     display:flex; align-items:center;
     justify-content:space-between;
@@ -85,7 +67,7 @@ header {
     background:linear-gradient(135deg,var(--pink),var(--pink-mid));
     border-radius:14px;
     display:flex; align-items:center; justify-content:center;
-    color: white; font-size:1.2rem; box-shadow:var(--shadow2);
+    font-size:1.2rem; box-shadow:var(--shadow2);
 }
 
 .logo-sub {
@@ -94,190 +76,175 @@ header {
     color:var(--muted); display:block; margin-top:-4px;
 }
 
-.date-badge {
-    background:var(--surface); border:1px solid var(--border2);
-    border-radius:100px; padding:9px 22px;
-    font-size:0.78rem; color:var(--text2);
-    font-weight:500; letter-spacing:0.3px; box-shadow:var(--shadow);
-}
+/* ─── NAVEGAÇÃO SEMANAL ─── */
+.week-nav { display:flex; flex-direction: column; gap:10px; margin-bottom:28px; }
+.week-label { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.week-range { flex: 1; font-size: 0.82rem; color: var(--text2); font-weight: 500; display: flex; align-items: center; gap: 8px; }
 
-.btn-report {
-    background:linear-gradient(135deg,var(--pink),var(--pink-mid));
-    color:#fff; border:none; border-radius:100px; padding:9px 20px;
-    font-family:'Jost',sans-serif; font-weight:600; font-size:0.78rem;
-    cursor:pointer; transition:all 0.2s; box-shadow:var(--shadow2);
-    display:flex; align-items:center; gap:7px;
-}
-
-.btn-report:hover { transform:translateY(-2px); box-shadow:0 6px 24px rgba(214,63,126,0.35); }
-
-/* ── COMPONENTES: BARRA DE CREATINA ── */
-.creatine-bar {
-  display: flex; align-items: center; gap: 12px;
-  background: var(--surface); border: 1.5px solid var(--border2);
-  border-radius: 16px; padding: 15px; margin-bottom: 20px;
-  transition: all 0.3s ease; box-shadow: var(--shadow);
-  position: relative; z-index: 2;
-}
-
-.creatine-bar.taken {
-  border-color: #27ae60;
-  background: rgba(46,204,113,0.05);
-}
-
-.creatine-info { flex: 1; }
-.creatine-title { font-size: 0.85rem; font-weight: 600; color: var(--text); margin-bottom: 2px; }
-.creatine-status { font-size: 0.75rem; color: var(--muted); }
-
-.btn-creatine {
-  background: linear-gradient(135deg, var(--pink), var(--pink-mid));
-  color: white; border: none; border-radius: 10px;
-  padding: 8px 15px; font-family: 'Jost', sans-serif;
-  font-weight: 600; cursor: pointer; transition: 0.2s;
-}
-
-.btn-creatine.done { background: #27ae60; }
-
-/* ── CHECK-IN / CHECK-OUT ── */
-.checkin-bar {
-    display: flex; align-items: center; gap: 12px;
-    background: var(--surface2); border: 1.5px solid rgba(214,63,126,0.15);
-    border-radius: 16px; padding: 14px 18px; margin-bottom: 22px;
-    position: relative; overflow: hidden;
-}
-
-.checkin-bar::before {
-    content: ''; position: absolute; left:0; top:0; bottom:0; width:4px;
-    background: linear-gradient(180deg,var(--pink),var(--pink-light));
-}
-
-.checkin-bar.active-session { border-color:rgba(46,204,113,0.35); background:rgba(46,204,113,0.04); }
-.checkin-bar.active-session::before { background: #27ae60; }
-
-.btn-checkin, .btn-checkout {
-    border: none; border-radius: 12px; padding: 10px 18px;
-    font-family:'Jost',sans-serif; font-weight: 600; font-size: 0.82rem;
-    cursor: pointer; transition: all 0.2s; color: white;
-}
-
-.btn-checkin { background: linear-gradient(135deg,var(--pink),var(--pink-mid)); }
-.btn-checkout { background: linear-gradient(135deg,#27ae60,#2ecc71); }
-
-/* ── NAVEGAÇÃO DE DIAS ── */
-.tabs-row {
-    display: flex; gap: 8px; overflow-x: auto;
-    padding-bottom: 12px; scrollbar-width: none;
-}
+.tabs-row { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 8px; scrollbar-width: none; }
 .tabs-row::-webkit-scrollbar { display: none; }
 
 .day-tab {
     flex-shrink:0; background:var(--surface);
     border:1px solid var(--border2); border-radius:14px;
     padding:10px 16px; color:var(--muted);
-    cursor:pointer; transition:all 0.22s;
-    display:flex; flex-direction: column; align-items:center;
-    box-shadow:var(--shadow); min-width: 70px;
+    cursor:pointer; transition:all 0.2s;
+    display:flex; flex-direction: column; align-items:center; gap:3px;
+    box-shadow:var(--shadow); min-width: 68px;
 }
 
 .day-tab.active {
     background:linear-gradient(135deg,var(--pink),var(--pink-mid));
     border-color:transparent; color:#fff;
+    box-shadow:var(--shadow2);
 }
 
-/* ── CARD PRINCIPAL ── */
+/* ─── CARD E LISTA DE EXERCÍCIOS ─── */
 .card {
     background:var(--surface); border:1px solid rgba(214,63,126,0.12);
     border-radius:var(--radius); padding:28px;
-    box-shadow:var(--shadow); position:relative;
+    box-shadow:var(--shadow); position:relative; overflow:hidden;
 }
 
 .day-name-big {
     font-family:'Cormorant Garamond',serif;
-    font-size: 2.6rem; font-weight:700; color:var(--pink);
-    line-height: 1.2; margin-bottom: 10px;
+    font-size:2.6rem; font-weight:700; color:var(--pink); line-height:1;
 }
 
-/* ── LISTA DE EXERCÍCIOS ── */
 .ex-item {
     background:var(--surface2); border:1.5px solid rgba(214,63,126,0.1);
     border-radius:14px; padding:14px 18px;
     display:flex; align-items:center; gap:14px;
-    margin-bottom: 8px; transition:all 0.2s;
+    transition:all 0.2s; margin-bottom: 8px;
+    position:relative; overflow:hidden;
 }
 
-.ex-item:hover { background: #fff; border-color: var(--pink-light); }
+.ex-item::before {
+    content:''; position:absolute; left:0; top:0; bottom:0; width:4px;
+    background: var(--pink);
+}
 
 .ex-check {
     width:22px; height:22px; border-radius:8px;
-    border:1.5px solid var(--pink-light); cursor:pointer;
-    display:flex; align-items:center; justify-content:center;
+    border:1.5px solid var(--pink-light);
+    cursor:pointer; display:flex; align-items:center; justify-content:center;
 }
 
-.ex-check.checked { background: var(--pink); border-color: transparent; }
-.ex-check.checked::after { content:'✓'; color: white; font-size: 12px; }
+.ex-check.checked {
+    background: var(--pink); border-color:transparent;
+}
 
-/* ── SPLASH SCREEN (VERSÃO PREMIUM) ── */
+.ex-check.checked::after { content:'✓'; font-size:12px; color:#fff; font-weight:700; }
+
+.ex-name { font-size:0.93rem; font-weight:500; color:var(--text); }
+
+/* ─── BARRAS DE STATUS (CREATINA E CHECKIN) ─── */
+.creatine-bar, .checkin-bar {
+    display: flex; align-items: center; gap: 12px;
+    background: var(--surface2); border: 1.5px solid rgba(214,63,126,0.15);
+    border-radius: 16px; padding: 14px 18px; margin-bottom: 16px;
+    transition: all 0.3s;
+}
+
+.creatine-bar.taken { border-color: #27ae60; background: rgba(46,204,113,0.05); }
+
+.btn-creatine, .btn-checkin {
+    background: var(--pink); color: #fff; border: none; padding: 8px 16px;
+    border-radius: 10px; font-weight: 600; cursor: pointer;
+}
+
+.btn-creatine.done, .btn-checkout { background: #27ae60; }
+
+/* ─── SPLASH SCREEN PREMIUM ─── */
 .splash {
     position: fixed; inset: 0; z-index: 99999;
     background: #d63f7e; display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
+    align-items: center; justify-content: center; overflow: hidden;
+    transition: opacity 0.8s ease, visibility 0.8s;
 }
 
-.splash.hide { animation: splashExit 0.8s ease forwards; }
-
-@keyframes splashExit {
-    to { opacity: 0; visibility: hidden; transform: scale(1.05); }
-}
+.splash.hide { opacity: 0; visibility: hidden; pointer-events: none; }
 
 .splash-photo-wrap {
-  position: relative; width: 190px; height: 190px;
-  margin-bottom: 30px; display: flex;
-  align-items: center; justify-content: center;
+    position: relative; width: 190px; height: 190px;
+    margin-bottom: 35px; display: flex; align-items: center; justify-content: center;
 }
 
 .premium-ring {
-  position: absolute; width: 100%; height: 100%;
-  border-radius: 50%; padding: 3px;
-  background: conic-gradient(from 0deg, var(--pink), var(--pink-mid), transparent 60%, var(--pink));
-  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #fff 100%);
-  mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #fff 100%);
-  animation: spinRing 2.5s linear infinite;
-  z-index: 2;
+    position: absolute; width: 100%; height: 100%;
+    border-radius: 50%; padding: 3px;
+    background: conic-gradient(from 0deg, var(--pink), var(--pink-mid), transparent 60%, var(--pink));
+    -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #fff 100%);
+    mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #fff 100%);
+    animation: spinRing 2.5s linear infinite;
 }
 
 .splash-photo {
-  width: 165px; height: 165px; border-radius: 50%;
-  object-fit: cover; position: relative; z-index: 3;
-  box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+    width: 160px; height: 160px; border-radius: 50%;
+    object-fit: cover; z-index: 3; box-shadow: 0 8px 25px rgba(0,0,0,0.2);
 }
 
-@keyframes spinRing {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+/* ─── OVERLAYS E MODAIS ─── */
+.overlay {
+    position:fixed; inset:0; z-index:100;
+    background:rgba(61,26,46,0.45); backdrop-filter:blur(6px);
+    display:flex; align-items:flex-end; justify-content:center;
+    opacity:0; pointer-events:none; transition:opacity 0.3s;
 }
 
-.splash-name {
-    font-family: "Cormorant Garamond", serif;
-    font-size: 2.8rem; font-weight: 700; color: #fff;
-    text-shadow: 0 2px 20px rgba(0,0,0,0.15);
+.overlay.open { opacity:1; pointer-events:all; }
+
+.report-panel {
+    background:var(--surface); border-radius:28px 28px 0 0;
+    width:100%; max-width:760px; padding:28px;
+    transform:translateY(100%); transition:transform 0.4s cubic-bezier(.32,1,.6,1);
+    max-height:90vh; overflow-y:auto;
 }
 
-/* ── FIREBASE STATUS ── */
-.firebase-status {
-    position: fixed; bottom: 16px; right: 16px;
-    display: flex; align-items: center; gap: 8px;
-    background: var(--surface); border: 1px solid var(--border2);
-    border-radius: 100px; padding: 6px 14px;
-    font-size: 0.7rem; color: var(--muted); z-index: 100;
+.overlay.open .report-panel { transform:translateY(0); }
+
+/* ─── ESTATÍSTICAS ─── */
+.stats-grid { display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-top:20px; }
+.stat-card {
+    background:var(--surface2); border:1px solid var(--border);
+    border-radius:16px; padding:16px; text-align:center;
 }
+.stat-num { font-family:'Cormorant Garamond'; font-size:2.2rem; font-weight:700; color:var(--pink); }
 
-.fb-dot { width: 8px; height: 8px; border-radius: 50%; background: #ccc; }
-.fb-dot.connected { background: #27ae60; box-shadow: 0 0 8px rgba(46,204,113,0.4); }
+.progress-bg { background:rgba(214,63,126,0.1); border-radius:100px; height:8px; overflow:hidden; margin-top:10px; }
+.progress-fill { height:100%; background:var(--pink); transition:width 1s ease-in-out; }
 
-/* ── MEDIA QUERIES ── */
+/* ─── ANIMAÇÕES ─── */
+@keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+@keyframes spinRing { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+/* ─── RESPONSIVIDADE ─── */
 @media (max-width: 600px) {
-    .app { padding: 20px 16px 60px; }
-    .day-name-big { font-size: 2.1rem; }
-    .logo-sub { letter-spacing: 1.5px; }
-    .btn-confirm { width: 100%; }
+    .app { padding: 20px 16px 40px; }
+    .day-name-big { font-size: 2rem; }
+    .stats-grid { grid-template-columns: 1fr; }
+    .report-panel { padding: 20px; }
 }
+
+/* ─── COMPONENTES EXTRAS ─── */
+.preset-chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 8px 14px; border-radius: 100px; border: 1px solid var(--border2);
+    background: var(--surface); color: var(--text2); font-size: 0.85rem;
+    cursor: pointer; margin: 4px; transition: 0.2s;
+}
+
+.preset-chip:hover { border-color: var(--pink); background: var(--surface2); }
+
+.firebase-status {
+    position: fixed; bottom: 12px; right: 12px;
+    font-size: 0.65rem; display: flex; align-items: center; gap: 5px;
+    background: rgba(255,255,255,0.8); padding: 4px 10px; border-radius: 20px;
+    box-shadow: var(--shadow); z-index: 1000;
+}
+
+.fb-dot { width: 7px; height: 7px; border-radius: 50%; background: #ccc; }
+.fb-dot.connected { background: #27ae60; }
+.fb-dot.syncing { background: var(--pink); animation: pulse 1s infinite; }
+
+@keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
