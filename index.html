@@ -3,15 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#d63f7e">
-    <link rel="apple-touch-icon" href="icon.png">
     <title>Cams Exercícios</title>
     
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
-    
-    <!-- CSS Externo -->
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;700&family=Jost:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
 <body>
 
@@ -29,21 +28,16 @@
             </div>
             <div class="splash-name-wrap">
                 <span class="splash-name">Cams Exercícios</span>
-                <span class="splash-sub">Agenda de Exercícios</span>
-            </div>
-            <div class="splash-loader">
-                <div class="splash-bar-wrap"><div class="splash-bar-fill"></div></div>
-                <div class="splash-loading-text">Sincronizando...</div>
+                <span class="splash-sub">Seu treino, seu progresso</span>
             </div>
         </div>
     </div>
 
-    <!-- Interface Principal -->
     <div class="app">
         <header>
             <div class="logo">
                 <div class="logo-icon">🏋️</div>
-                <div>Camila <span style="color:var(--pink)">Evelyn</span><span class="logo-sub">Agenda</span></div>
+                <div>Cams <span style="color:var(--pink)">Evelyn</span></div>
             </div>
             <div class="header-right">
                 <div class="date-badge" id="current-date"></div>
@@ -56,6 +50,7 @@
         <div class="card">
             <div class="day-name-big" id="active-day-name"></div>
             <div class="day-full-date" id="active-day-date"></div>
+            
             <div id="creatine-bar"></div>
             <div id="checkin-bar"></div>
 
@@ -73,17 +68,19 @@
             <div id="dup-bar"></div>
         </div>
 
-        <!-- Estatísticas e Overview -->
         <div class="bottom-row">
             <div class="card"><div id="overview-grid" class="overview-grid"></div></div>
             <div class="card"><div id="stats-grid" class="stats-grid"></div><div id="progress-wrap"></div></div>
         </div>
     </div>
 
-    <!-- Modais e Overlays Ocultos (Relatório, Duplicar, Celebração) -->
-    <!-- ... (Mantenha as estruturas de <div class="overlay"> que estavam no seu HTML original aqui) ... -->
+    <!-- Firebase Status -->
+    <div class="firebase-status">
+        <div class="fb-dot" id="fb-dot"></div>
+        <span id="fb-label">Firebase</span>
+    </div>
 
-    <!-- Scripts -->
+    <!-- Scripts (Ordem Importante) -->
     <script type="module" src="firebase-config.js"></script>
     <script src="scripts.js"></script>
 </body>
