@@ -1232,16 +1232,38 @@
     margin-bottom: 32px;
   }
 
-  .splash-photo {
-    width: 150px; height: 150px;
-    border-radius: 50%;
-    object-fit: cover;
-    display: block;
-    position: relative; z-index: 3;
-    box-shadow:
-      0 0 0 4px rgba(255,255,255,0.3),
-      0 0 0 8px rgba(255,255,255,0.1),
-      0 20px 60px rgba(0,0,0,0.25);
+ /* Foto da Splash Screen */
+.splash-photo {
+  width: 160px; /* Aumentei um pouco o tamanho */
+  height: 160px;
+  border-radius: 50%;
+  object-fit: cover; /* Isso garante que a foto fique centralizada e preencha o círculo */
+  object-position: center; /* Centraliza o foco da imagem */
+  display: block;
+  position: relative;
+  z-index: 3;
+  border: none; /* Remove qualquer borda */
+  box-shadow: none; /* Remove as sombras e brilhos */
+}
+
+/* Esconder os anéis e pulsos que criam as bordas e efeitos */
+.splash-ring-outer, 
+.splash-ring-inner, 
+.splash-photo-pulse, 
+.splash-photo-pulse2 {
+  display: none !important;
+}
+
+/* Ajuste no container da foto para garantir centralização total */
+.splash-photo-wrap {
+  position: relative;
+  width: 160px;
+  height: 160px;
+  margin-bottom: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
   }
 
   /* Anel giratório externo */
