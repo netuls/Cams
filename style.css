@@ -1227,24 +1227,38 @@
 
   /* ─── Foto ─── */
   .splash-photo-wrap {
-    position: relative;
-    width: 150px; height: 150px;
-    margin-bottom: 32px;
-  }
+  position: relative;
+  width: 180px; 
+  height: 180px;
+  margin-bottom: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: floatPhoto 4s ease-in-out infinite;
+}
 
  /* Foto da Splash Screen */
 .splash-photo {
-  width: 160px; /* Aumentei um pouco o tamanho */
-  height: 160px;
+  width: 100%;
+  height: 100%;
   border-radius: 50%;
-  object-fit: cover; /* Isso garante que a foto fique centralizada e preencha o círculo */
-  object-position: center; /* Centraliza o foco da imagem */
-  display: block;
+  object-fit: cover;
   position: relative;
   z-index: 3;
-  border: none; /* Remove qualquer borda */
-  box-shadow: none; /* Remove as sombras e brilhos */
+  filter: contrast(1.05) saturate(1.1) brightness(1.05) drop-shadow(0 10px 25px rgba(0,0,0,0.3));
+  border: 2px solid rgba(255, 255, 255, 0.6);
+  animation: photoReveal 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+} 
+@keyframes photoReveal {
+  0% { transform: scale(0.8); opacity: 0; filter: brightness(2) blur(10px); }
+  100% { transform: scale(1); opacity: 1; filter: brightness(1.05) blur(0); }
 }
+
+@keyframes floatPhoto {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-12px); }
+}
+/* ----------------------------------------- */
 
 /* Esconder os anéis e pulsos que criam as bordas e efeitos */
 .splash-ring-outer, 
@@ -1255,16 +1269,16 @@
 }
 
 /* Ajuste no container da foto para garantir centralização total */
-.splash-photo-wrap {
-  position: relative;
-  width: 160px;
-  height: 160px;
-  margin-bottom: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.splash-photo-wrap::before {
+  content: '';
+  position: absolute;
+  inset: -15px;
+  background: radial-gradient(circle, rgba(214, 63, 126, 0.4) 0%, transparent 75%);
+  border-radius: 50%;
+  filter: blur(12px);
+  z-index: 1;
 }
-  }
+  
 
   /* Anel giratório externo */
   .splash-ring-outer {
